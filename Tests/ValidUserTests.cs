@@ -8,12 +8,36 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using Microsoft.Playwright.NUnit;
+using Microsoft.VisualBasic;
 
 namespace Framework.Tests
 {
     [TestFixture]
     public class ValidUserTests : PageTest
     {
+
+        private IBrowserContext _browsercontext = null!;
+        private IPage _page = null!;
+
+        [SetUp]
+
+        public async Task ValidUserSetup()
+        {
+            _browsercontext = await Browser.NewContextAsync();
+
+            await _browsercontext.Tracing.StartAsync(new TracingStartOptions
+            {
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true
+
+           });
+                
+
+            _page = await _browsercontext.NewPageAsync();
+
+
+        }
         public static IEnumerable<TestCaseData> ValidUserDataSource()
         {
             List<LoginDataModel> allData = JsonReader.GetLoginData();
@@ -33,21 +57,21 @@ namespace Framework.Tests
         public async Task PositiveEndToEndCheckout(string user, string pass)
         {
             
-            await Page.GotoAsync("https://www.saucedemo.com");
+            await _page.GotoAsync("https://www.saucedemo.com");
 
-            var finalLogin = new LoginPage(Page);
+            var finalLogin = new LoginPage(_page);
 
             await finalLogin.FullLoginCredentials(user, pass);
 
-            var finalInventory = new InventoryPage(Page);
+            var finalInventory = new InventoryPage(_page);
 
             await finalInventory.AddFirstProductToCart();
 
-            var finalInfoCheck = new InfoCheckoutDetails(Page);
+            var finalInfoCheck = new InfoCheckoutDetails(_page);
 
             await finalInfoCheck.FillInformationAndContinue("Adamya", "Tomar", "213451");
 
-            var finalCheckout = new CheckoutCompletePage(Page);
+            var finalCheckout = new CheckoutCompletePage(_page);
 
             string successMessage = await finalCheckout.GetSuccessMessage();
 
@@ -55,7 +79,7 @@ namespace Framework.Tests
 
             await finalCheckout.ClickBackHome();
 
-            Assert.That(Page.Url, Does.Contain("inventory.html"), "CRITICAL FAILURE : Dashboard navigation failed!!");
+            Assert.That(_page.Url, Does.Contain("inventory.html"), "CRITICAL FAILURE : Dashboard navigation failed!!");
 
             var customtime = new FrameworkUtils();
 
@@ -66,8 +90,25 @@ namespace Framework.Tests
             
         }
 
+         [TearDown]
+         public async Task ValidUserTeardown()
+        {
+
+            var customtime = new FrameworkUtils();
+
+            string time = customtime.GetCustomTimestamp();
 
 
+            await _browsercontext.Tracing.StopAsync(new TracingStopOptions
+            {
+
+               Path = $"Traces/trace_ValidUser_{time}.zip" 
+
+            });
+
+            await _browsercontext.CloseAsync();
+
+        }
     }
 
 }

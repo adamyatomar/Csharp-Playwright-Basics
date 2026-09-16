@@ -1,26 +1,61 @@
-# 🚀 Scalable B2C E-Commerce Test Automation Suite
+# C# Playwright NUnit Automation Project
 
-An enterprise-grade test automation framework built from scratch using **C#**, **Playwright**, and **NUnit**. This project implements strict industry-standard architecture for testing end-to-end user journeys on e-commerce platforms.
+A web automation testing project built for the SauceDemo website using **C#**, **Playwright**, and **NUnit**. This project demonstrates how to structure automation scripts using the Page Object Model (POM) and manage test data dynamically.
 
-## 🏛️ Project Architecture
+## 🚀 Key Features
 
-The framework strictly follows the **Page Object Model (POM)** pattern to maximize reusability and maintainability:
+- **Page Object Model (POM):** Organized the code by separating UI elements and actions into dedicated page classes, making the scripts easy to read and maintain.
 
-- 📁 **Pages/**: Contains structural page element classes. Features **strict encapsulation** where all locators are kept `private` and only safe action/getter methods are exposed.
-- 📁 **Tests/**: Independent test execution engines mapping the complete multi-page user lifecycle.
-- 📁 **Utils/**: Reusable helper infrastructure (e.g., custom instant dynamic timestamp generator).
+- **Data-Driven Testing:** Removed all hardcoded usernames and passwords. The project reads test data dynamically from an external **JSON file** at runtime using C# objects.
 
-## 🛠️ Core Engineering Implementations
+- **Clean Test Layout (No If-Else):** Avoided complex conditional logic inside tests. The workflows are split into two separate, clean test files: one for the successful end-to-end checkout flow (`ValidUserTests`) and one for the locked-out user error validation (`LockedUserTests`).
 
-- **Airtight Locator Strategy**: Optimized backend element bindings using unique HTML IDs (`#`) and classes (`.`) to eradicate timeouts and strict-mode violations.
-- **Asynchronous Pipeline**: Line-by-line task execution orchestration utilizing C# `async` and `await` structures.
-- **Robust Sync Support**: Integrated dynamic fallback capsules (`?? string.Empty`) within string getters to achieve a **0-warning compilation zone**.
+- **Playwright Tracing & Setup Hooks:** Integrated NUnit `[SetUp]` and `[TearDown]` hooks to open a fresh browser context and page for every test. It automatically records execution logs and saves them as `.zip` traces with unique timestamps inside a `Traces/` folder whenever tests run.
 
-## 🏃‍♂️ How To Run Locally
+## 📁 Project Directory Structure
 
-1. Clone this repository to your local system.
-2. Ensure you have the `.NET SDK` installed.
-3. Open the terminal inside the root project directory and execute:
+```text
+PlaywrightFramework/
+│
+├── Data/
+│   ├── LoginData.json          # Test data credentials in JSON format
+│   └── LoginDataModel.cs       # C# class mapping for JSON data structure
+│
+├── Pages/
+│   ├── LoginPage.cs            # Login page elements and methods
+│   ├── InventoryPage.cs        # Product catalog elements and methods
+│   ├── InfoCheckoutDetails.cs  # Customer checkout form elements and methods
+│   └── CheckoutCompletePage.cs # Order completion success page verification
+│
+├── Tests/
+│   ├── ValidUserTests.cs       # End-to-End successful user journey test
+│   └── LockedUserTests.cs      # Negative locked-out user error message test
+│
+├── Utils/
+│   ├── FrameworkUtils.cs       # Custom timestamp generator tool
+│   └── JsonReader.cs           # JSON file reading utility
+│
+└── Traces/                     # Folder where execution zip traces are saved automatically
+```
+
+## 🛠️ How to Setup and Run
+
+1. **Clone the Project Repository:**
+   ```bash
+   git clone https://github.com
+   cd csharp-playwright-nunit-framework
+   ```
+
+2. **Restore Dependencies:**
+   ```bash
+   dotnet restore
+   ```
+
+3. **Run the Automated Tests:**
+   Execute the following command in your terminal to clear past cache and trigger the execution suite:
+   ```bash
+   dotnet clean
+   ```
    ```bash
    dotnet test --logger:"console;verbosity=detailed"
    ```
