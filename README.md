@@ -1,16 +1,18 @@
 # C# Playwright NUnit Automation Project
 
-A web automation testing project built for the SauceDemo website using **C#**, **Playwright**, and **NUnit**. This project demonstrates how to structure automation scripts using the Page Object Model (POM) and manage test data dynamically.
+A web automation testing project built for the SauceDemo website using **C#**, **Playwright**, and **NUnit**. This project demonstrates clean automation coding practices using the Page Object Model (POM), external test data handling, and base class inheritance.
 
 ## 🚀 Key Features
 
+- **Base Class Architecture (`BaseTest.cs`):** Removed duplicate code across test files by creating a master base class. All browser context initialization, dynamic test tracing, and teardown operations are handled centrally.
+
 - **Page Object Model (POM):** Organized the code by separating UI elements and actions into dedicated page classes, making the scripts easy to read and maintain.
 
-- **Data-Driven Testing:** Removed all hardcoded usernames and passwords. The project reads test data dynamically from an external **JSON file** at runtime using C# objects.
+- **Data-Driven Testing:** Removed all hardcoded usernames and passwords from test scripts. The project reads test data dynamically from an external **JSON file** at runtime using C# models.
 
-- **Clean Test Layout (No If-Else):** Avoided complex conditional logic inside tests. The workflows are split into two separate, clean test files: one for the successful end-to-end checkout flow (`ValidUserTests`) and one for the locked-out user error validation (`LockedUserTests`).
+- **Clean Test Layout (No If-Else):** Avoided complex conditional logic inside tests. The workflows are split into separate test files: one for the successful end-to-end checkout flow (`ValidUserTests`) and one for the locked-out user error validation (`LockedUserTests`).
 
-- **Playwright Tracing & Setup Hooks:** Integrated NUnit `[SetUp]` and `[TearDown]` hooks to open a fresh browser context and page for every test. It automatically records execution logs and saves them as `.zip` traces with unique timestamps inside a `Traces/` folder whenever tests run.
+- **Automatic NUnit Test Tracing:** Integrated automatic Playwright Tracing that records execution screenshots and snapshots. It utilizes NUnit's `TestContext` to automatically save `.zip` traces named after each specific running test case inside a `Traces/` folder.
 
 ## 📁 Project Directory Structure
 
@@ -28,8 +30,9 @@ PlaywrightFramework/
 │   └── CheckoutCompletePage.cs # Order completion success page verification
 │
 ├── Tests/
-│   ├── ValidUserTests.cs       # End-to-End successful user journey test
-│   └── LockedUserTests.cs      # Negative locked-out user error message test
+│   ├── BaseTest.cs             # Master central setup and teardown hooks class
+│   ├── ValidUserTests.cs       # End-to-End successful user journey test (Inherits BaseTest)
+│   └── LockedUserTests.cs      # Negative locked-out user error message test (Inherits BaseTest)
 │
 ├── Utils/
 │   ├── FrameworkUtils.cs       # Custom timestamp generator tool

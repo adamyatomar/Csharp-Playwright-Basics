@@ -13,31 +13,8 @@ using Microsoft.VisualBasic;
 namespace Framework.Tests
 {
     [TestFixture]
-    public class ValidUserTests : PageTest
+    public class ValidUserTests : BaseTest
     {
-
-        private IBrowserContext _browsercontext = null!;
-        private IPage _page = null!;
-
-        [SetUp]
-
-        public async Task ValidUserSetup()
-        {
-            _browsercontext = await Browser.NewContextAsync();
-
-            await _browsercontext.Tracing.StartAsync(new TracingStartOptions
-            {
-                Screenshots = true,
-                Snapshots = true,
-                Sources = true
-
-           });
-                
-
-            _page = await _browsercontext.NewPageAsync();
-
-
-        }
         public static IEnumerable<TestCaseData> ValidUserDataSource()
         {
             List<LoginDataModel> allData = JsonReader.GetLoginData();
@@ -90,25 +67,6 @@ namespace Framework.Tests
             
         }
 
-         [TearDown]
-         public async Task ValidUserTeardown()
-        {
-
-            var customtime = new FrameworkUtils();
-
-            string time = customtime.GetCustomTimestamp();
-
-
-            await _browsercontext.Tracing.StopAsync(new TracingStopOptions
-            {
-
-               Path = $"Traces/trace_ValidUser_{time}.zip" 
-
-            });
-
-            await _browsercontext.CloseAsync();
-
-        }
     }
 
 }

@@ -11,29 +11,9 @@ using Microsoft.Playwright.NUnit;
 namespace Framework.Tests
 {
     [TestFixture]
-    public class LockedUserTests : PageTest
+    public class LockedUserTests : BaseTest
     {
-        private IBrowserContext _browsercontext = null!;
-        private IPage _page = null!;
 
-        [SetUp]
-
-        public async Task LockedUserSetup()
-        {
-            _browsercontext = await Browser.NewContextAsync();
-
-            await _browsercontext.Tracing.StartAsync(new TracingStartOptions
-            {
-                Screenshots = true,
-                Snapshots = true,
-                Sources = true
-
-            });
-
-
-        _page = await _browsercontext.NewPageAsync();
-
-        }
         
         public static IEnumerable<TestCaseData> LockedUserDataSource()
         {
@@ -67,23 +47,5 @@ namespace Framework.Tests
             Console.WriteLine("[Negative Test Log] Lockout verification passed seamlessly!");
         }
 
-        [TearDown]
-
-        public async Task LockedUserTeardown()
-        {
-            var customtime = new FrameworkUtils();
-
-            string time = customtime.GetCustomTimestamp();
-
-            await _browsercontext.Tracing.StopAsync(new TracingStopOptions
-            {
-
-                Path = $"Traces/trace_LockedUser_{time}.zip" 
-                
-            });
-
-            await _browsercontext.CloseAsync();
-
-        }
     }
 }
